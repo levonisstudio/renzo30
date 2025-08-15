@@ -248,33 +248,11 @@ html, body {
   width: 700px;
   height: 700px;
 }
-
-
-/* Ensure the doll scales from the center and stays between header/footer */
-#doll-container {
-  display: grid;
-  place-items: center;
-  height: calc(100dvh - var(--safe-top, 0px) - var(--safe-bottom, 0px));
-  overflow: hidden;
-}
-
-#paper-doll-wrapper {
-  width: 700px;
-  height: 700px;
-  transform-origin: center center; /* center-center so it won't creep under header/footer */
-}
-
-/* Make sure the inner SVGs fill the design box */
-#paper-doll-wrapper svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
 </style>
 </head>
 <body>
 <div id="body-wrap">
-<div id="header">
+<div id="header" class="squiggle">
 <h1>
       Renzo Turns Thirty
     </h1>
@@ -282,9 +260,9 @@ html, body {
       Saturday 25 october<br/>
       13 Stanley St, Brunswick
     </h2>
-<button id="reset-button"><h2>Reset</h2></button>
+
 </div>
-<div id="center-wrapper">
+<div id="center-wrapper" class="squiggle">
 <div class="scaling-container">
 <div id="doll-container"><div id="paper-doll-wrapper">
 <!-- Base Doll -->
@@ -358,7 +336,8 @@ html, body {
 </div></div>
 </div>
 </div>
-<div id="footer">
+<div id="footer" class="squiggle">
+  <button id="reset-button"><h2>Reset</h2></button>
 <h2>
       Come From 5pm, Speeches from 8pm<br/>
       Food and some drinks provided<br/>
@@ -526,32 +505,8 @@ document.getElementById('reset-button')?.addEventListener('click', () => {
   }
 
   function fitStage(){
-    const wrapper = document.getElementById('paper-doll-wrapper');
-    if (!wrapper) return;
-
-    // Header/footer detection: prefer #header-top/#header-bottom, fallback to first header/footer tags
-    const headerEl = document.getElementById('header-top') || document.querySelector('header');
-    const footerEl = document.getElementById('header-bottom') || document.querySelector('footer');
-
-    const topH = headerEl ? headerEl.getBoundingClientRect().height : 0;
-    const botH = footerEl ? footerEl.getBoundingClientRect().height : 0;
-
-    const availW = window.innerWidth;
-    const availH = Math.max(0, window.innerHeight - topH - botH);
-
-    const scale = Math.min(availW / 700, availH / 700);
-
-    // Apply scale to the design-space wrapper (700x700 logical)
-    wrapper.style.transform = `scale(${scale})`;
-    wrapper.dataset.scale = String(scale);
-
-    // Update safe paddings so container height equals the free viewport area
-    const container = document.getElementById('doll-container');
-    if (container) {
-      container.style.setProperty('--safe-top', `${topH}px`);
-      container.style.setProperty('--safe-bottom', `${botH}px`);
-    }
-} = availableSize();
+    if (!stage) return;
+    const { width: aw, height: ah, topH, botH } = availableSize();
     const scale = Math.min(aw / DESIGN_W, ah / DESIGN_H);
 
     stage.style.transform = `scale(${scale})`;
